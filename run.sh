@@ -5,7 +5,7 @@ set -xue
 # /usr/local/opt/llvm/bin/clang
 CC=/usr/local/opt/llvm/bin/clang
 CFLAGS="-std=c11 -O2 -g3 -Wall -Wextra --target=riscv32 -ffreestanding -nostdlib"
-$CC $CFLAGS -Wl,-Tkernel.ld -Wl,-Map=kernel.map -o kernel.elf kernel.c
+$CC $CFLAGS -Wl,-Tkernel.ld -Wl,-Map=kernel.map -o kernel.elf kernel.c common.c
 
 # % ls $(brew --prefix)/bin/qemu-system-riscv32
 # /usr/local/bin/qemu-system-riscv32
