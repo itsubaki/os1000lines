@@ -2,8 +2,13 @@
 #include "common.h"
 
 extern char __bss[], __bss_end[], __stack_top[];
-
 extern char __free_ram[], __free_ram_end[];
+
+struct process procs[PROCS_MAX];
+struct process *current_proc;
+struct process *idle_proc;
+struct process *proc_a;
+struct process *proc_b;
 
 paddr_t alloc_pages(uint32_t n)
 {
@@ -121,10 +126,7 @@ __attribute__((aligned(4))) void kernel_entry(void)
         "sret\n");
 }
 
-struct process procs[PROCS_MAX];
-
-__attribute__((naked)) void switch_context(uint32_t *prev_sp,
-                                           uint32_t *next_sp)
+__attribute__((naked)) void switch_context(uint32_t *prev_sp, uint32_t *next_sp)
 {
     __asm__ __volatile__(
         "addi sp, sp, -13 * 4\n"
@@ -206,9 +208,6 @@ void handle_trap(struct trap_frame *f)
     PANIC("unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, user_pc);
 }
 
-struct process *current_proc;
-struct process *idle_proc;
-
 void yield(void)
 {
     struct process *next = idle_proc;
@@ -235,9 +234,6 @@ void yield(void)
 
     switch_context(&prev->sp, &next->sp);
 }
-
-struct process *proc_a;
-struct process *proc_b;
 
 void proc_a_entry(void)
 {

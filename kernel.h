@@ -2,6 +2,20 @@
 
 #include "common.h"
 
+struct process
+{
+    int pid;
+    int state;
+    vaddr_t sp;
+    uint8_t stack[8192];
+};
+
+struct sbiret
+{
+    long error;
+    long value;
+};
+
 struct trap_frame
 {
     uint32_t ra;
@@ -37,6 +51,10 @@ struct trap_frame
     uint32_t sp;
 } __attribute__((packed));
 
+#define PROCS_MAX 8
+#define PROC_UNUSED 0
+#define PROC_RUNNABLE 1
+
 #define READ_CSR(reg)                         \
     ({                                        \
         unsigned long __tmp;                  \
@@ -52,12 +70,6 @@ struct trap_frame
         __asm__ __volatile__("csrw " #reg ", %0" ::"r"(__tmp)); \
     } while (0)
 
-struct sbiret
-{
-    long error;
-    long value;
-};
-
 #define PANIC(fmt, ...)                                                       \
     do                                                                        \
     {                                                                         \
@@ -66,15 +78,3 @@ struct sbiret
         {                                                                     \
         }                                                                     \
     } while (0)
-
-#define PROCS_MAX 8
-#define PROC_UNUSED 0
-#define PROC_RUNNABLE 1
-
-struct process
-{
-    int pid;
-    int state;
-    vaddr_t sp;
-    uint8_t stack[8192];
-};
