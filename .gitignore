@@ -52,8 +52,8 @@ Mkfile.old
 dkms.conf
 
 # operating-system-in-1000-lines
-/disk/*
-!/disk/.gitkeep
+/disk
+/tmp
 *.map
 *.tar
 *.o
